@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import HeroSection from "@/components/HeroSection";
 import TrendingTopics from "@/components/TrendingTopics";
 import TodaysMatches from "@/components/TodaysMatches";
 import MemeCarousel from "@/components/MemeCarousel";
@@ -9,6 +10,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <HeroSection />
       
       <main className="container mx-auto px-4 py-8 md:px-6">
         <div className="space-y-12">
