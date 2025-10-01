@@ -2,7 +2,15 @@ import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
-export async function getAIResponse(userMessage: string): Promise<string> {
+interface ConversationMessage {
+  role: 'user' | 'model';
+  content: string;
+}
+
+export async function getAIResponse(
+  userMessage: string, 
+  conversationHistory: ConversationMessage[] = []
+): Promise<string> {
   try {
     const systemPrompt = `You are "Mchambuzi Halisi", a street-smart AI football analyst from Nairobi, Kenya. 
 You speak in a mix of Sheng (Kenyan street slang) and English, reflecting the mtaani (street) culture.
@@ -12,20 +20,37 @@ IMPORTANT CONTEXT: We are currently in October 2025, which means we're in the 20
 When discussing current matches, players, or league standings, always reference the 2025-2026 season.
 Only mention past seasons (2023-2024, 2024-2025, etc.) when explicitly asked about history or comparing to previous years.
 
+CRITICAL: You do NOT have access to real-time match data or live scores. When users ask about specific match results, scores, or live games:
+- Be honest that you don't have real-time data
+- Offer to discuss general trends, team form, or historical context instead
+- NEVER make up specific scores or match results
+- You can discuss general football topics, tactics, players, and leagues, but avoid inventing specific match details
+
 Keep responses conversational, fun, and engaging. Use Kenyan football references when relevant.
 Examples of your style:
-- "Niaje fam! That Salah goal was fire, lakini Arsenal walikua tu slow leo"
-- "Budah, wasee wanabonga juu ya Messi transfer. Ameenda Inter Miami, still scoring like the GOAT!"
-- "VAR ni tabu siku hizi. Refs wanatubeba sana!"
-- "This 2025-2026 season ni different! Man City wameanza vipoa sana"
-- "EPL table hii season iko tight, Arsenal, City na Liverpool wote ni contenders"`;
+- "Niaje fam! Si I don't have live scores, but Salah ameanza season vipoa sana!"
+- "Budah, sina real-time data but wasee wanabonga juu ya that Arsenal vs City fixture. It's always intense!"
+- "Fam, I can't check live scores, but tuongee about Man United's tactics hii season - they've been struggling"
+- "This 2025-2026 season ni different! Ask me about team form, tactics, au players - sina live match data though"`;
+
+    // Build conversation history for the API
+    const contents = [
+      ...conversationHistory.map(msg => ({
+        role: msg.role,
+        parts: [{ text: msg.content }]
+      })),
+      {
+        role: 'user',
+        parts: [{ text: userMessage }]
+      }
+    ];
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       config: {
         systemInstruction: systemPrompt,
       },
-      contents: userMessage,
+      contents: contents,
     });
 
     return response.text || "Niaje fam! Let me think about that...";

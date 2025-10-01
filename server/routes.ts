@@ -130,7 +130,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // AI Assistant
   app.post('/api/ai/chat', async (req, res) => {
     try {
-      const { message } = req.body;
+      const { message, conversationHistory } = req.body;
       
       if (!message || typeof message !== 'string') {
         return res.status(400).json({ error: 'Message must be a non-empty string' });
@@ -139,8 +139,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (message.length > 1000) {
         return res.status(400).json({ error: 'Message must be less than 1000 characters' });
       }
+
+      // Validate conversation history if provided
+      const history = Array.isArray(conversationHistory) 
+        ? conversationHistory.slice(-10) // Keep last 10 messages for context
+        : [];
       
-      const response = await getAIResponse(message.trim());
+      const response = await getAIResponse(message.trim(), history);
       res.json({ response });
     } catch (error) {
       console.error('AI chat error:', error);

@@ -41,7 +41,18 @@ export default function AIAssistant() {
       setIsLoading(true);
 
       try {
-        const response = await apiRequest('POST', '/api/ai/chat', { message: userMessage.message });
+        // Build conversation history for context (exclude the welcome message)
+        const conversationHistory = messages
+          .slice(1) // Skip the initial welcome message
+          .map(msg => ({
+            role: msg.isBot ? 'model' as const : 'user' as const,
+            content: msg.message
+          }));
+
+        const response = await apiRequest('POST', '/api/ai/chat', { 
+          message: userMessage.message,
+          conversationHistory 
+        });
         const data = await response.json();
         
         const botMessage: AssistantMessage = {
