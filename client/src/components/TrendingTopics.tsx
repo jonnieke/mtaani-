@@ -15,7 +15,7 @@ export default function TrendingTopics() {
     { id: "1", topic: "Messi Transfer", searchVolume: "500K", trend: "up" },
     { id: "2", topic: "Arsenal vs Chelsea", searchVolume: "350K", trend: "up" },
     { id: "3", topic: "CAF Champions League", searchVolume: "280K", trend: "up" },
-    { id: "4", topic: "Salah Injury", searchVolume: "220K", trend: "stable" },
+    { id: "4", topic: "Salah Injury Update", searchVolume: "220K", trend: "stable" },
     { id: "5", topic: "Real Madrid Rumors", searchVolume: "180K", trend: "up" },
   ];
 
