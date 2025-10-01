@@ -15,8 +15,12 @@ export default function Home() {
       
       <main className="container mx-auto px-4 py-8 md:px-6">
         <div className="space-y-12">
-          <AIAssistant />
-          <SideChat />
+          {/* AI Assistant and Side Chat - Side by side on desktop */}
+          <div className="grid gap-6 lg:grid-cols-2">
+            <AIAssistant />
+            <SideChat />
+          </div>
+          
           <TodaysMatches />
           <MemeCarousel />
         </div>
