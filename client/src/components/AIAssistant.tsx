@@ -18,7 +18,7 @@ export default function AIAssistant() {
   const [messages, setMessages] = useState<AssistantMessage[]>([
     {
       id: "1",
-      message: "Niaje fam! Mchambuzi Halisi niko hapa kukusort na latest football vibes. Ask me anything!",
+      message: "Niaje fam! Mchambuzi Halisi niko hapa kukusort na football analysis, tactics, na player vibes! Ask me anything about teams, form, au strategies. (Psst: Check Today's Matches section below for live scores!)",
       isBot: true,
       timestamp: new Date().toISOString(),
     },
@@ -101,6 +101,9 @@ export default function AIAssistant() {
         <div className="bg-gradient-to-r from-chart-2/10 to-chart-2/5 p-3">
           <p className="text-sm text-muted-foreground">
             Your AI football companion speaking Sheng + English
+          </p>
+          <p className="mt-2 text-xs text-muted-foreground" data-testid="text-live-scores-guidance">
+            <strong>Need live scores?</strong> Check the "Today's Matches" section below for match results and fixtures
           </p>
         </div>
 
