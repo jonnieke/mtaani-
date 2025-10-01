@@ -1,4 +1,5 @@
 import { TrendingUp, Flame } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 interface TrendingTopic {
   id: string;
@@ -7,16 +8,27 @@ interface TrendingTopic {
 }
 
 export default function TrendingCarousel() {
-  //todo: remove mock functionality
-  const topics: TrendingTopic[] = [
-    { id: "1", topic: "Messi Transfer", searchVolume: "500K" },
-    { id: "2", topic: "Arsenal vs Chelsea", searchVolume: "350K" },
-    { id: "3", topic: "CAF Champions League", searchVolume: "280K" },
-    { id: "4", topic: "Salah Injury Update", searchVolume: "220K" },
-    { id: "5", topic: "Real Madrid Rumors", searchVolume: "180K" },
-    { id: "6", topic: "VAR Controversy", searchVolume: "160K" },
-    { id: "7", topic: "Haaland Form", searchVolume: "140K" },
-  ];
+  const { data: topics = [], isLoading } = useQuery<TrendingTopic[]>({
+    queryKey: ['/api/trending/topics'],
+  });
+
+  if (isLoading) {
+    return (
+      <section className="border-y bg-card py-4">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="mb-3 flex items-center gap-2">
+            <Flame className="h-5 w-5 text-[#f59e0b]" />
+            <h2 className="font-display text-lg font-bold md:text-xl">Trending Football Topics</h2>
+          </div>
+          <div className="flex gap-2 overflow-x-auto">
+            <div className="h-10 w-32 animate-pulse rounded-lg bg-muted"></div>
+            <div className="h-10 w-32 animate-pulse rounded-lg bg-muted"></div>
+            <div className="h-10 w-32 animate-pulse rounded-lg bg-muted"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="border-y bg-card py-4">

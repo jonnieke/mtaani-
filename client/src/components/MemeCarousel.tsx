@@ -1,37 +1,52 @@
 import { Laugh, Upload, Heart, Share2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import meme1 from "@assets/generated_images/Football_celebration_meme_cartoon_de70cf47.png";
-import meme2 from "@assets/generated_images/Goalkeeper_fail_meme_cartoon_b7d29a9c.png";
-import meme3 from "@assets/generated_images/Referee_controversy_meme_cartoon_01c5281f.png";
-
-interface Meme {
-  id: string;
-  imageUrl: string;
-  caption: string;
-  likes: number;
-}
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient, apiRequest } from "@/lib/queryClient";
+import type { Meme } from "@shared/schema";
 
 export default function MemeCarousel() {
-  //todo: remove mock functionality
-  const [memes] = useState<Meme[]>([
-    { id: "1", imageUrl: meme1, caption: "When Arsenal bottles again", likes: 234 },
-    { id: "2", imageUrl: meme2, caption: "Messi va Ronaldo wars never end", likes: 456 },
-    { id: "3", imageUrl: meme3, caption: "Chelsea fans right now", likes: 189 },
-  ]);
+  const { data: memes = [], isLoading } = useQuery<Meme[]>({
+    queryKey: ['/api/memes'],
+  });
+
+  const likeMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await apiRequest('POST', `/api/memes/${id}/like`, undefined);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/memes'] });
+    },
+  });
 
   const handleUpload = () => {
     console.log("Upload meme clicked");
   };
 
   const handleLike = (id: string) => {
-    console.log(`Liked meme: ${id}`);
+    likeMutation.mutate(id);
   };
 
   const handleShare = (id: string) => {
     console.log(`Shared meme: ${id}`);
   };
+
+  if (isLoading) {
+    return (
+      <section className="w-full">
+        <div className="mb-4 flex items-center gap-2">
+          <Laugh className="h-6 w-6 text-chart-5" />
+          <h2 className="font-display text-2xl font-bold md:text-3xl">Trending Memes</h2>
+        </div>
+        <div className="flex gap-4 overflow-x-auto">
+          <div className="h-64 w-80 animate-pulse rounded-xl bg-muted"></div>
+          <div className="h-64 w-80 animate-pulse rounded-xl bg-muted"></div>
+          <div className="h-64 w-80 animate-pulse rounded-xl bg-muted"></div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="w-full">

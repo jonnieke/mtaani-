@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import { apiRequest } from "@/lib/queryClient";
 
 interface AssistantMessage {
   id: string;
@@ -14,23 +15,67 @@ interface AssistantMessage {
 }
 
 export default function AIAssistant() {
-  //todo: remove mock functionality
-  const [messages] = useState<AssistantMessage[]>([
+  const [messages, setMessages] = useState<AssistantMessage[]>([
     {
       id: "1",
       message: "Niaje fam! Mchambuzi Halisi niko hapa kukusort na latest football vibes. Ask me anything!",
       isBot: true,
-      timestamp: "Just now",
+      timestamp: new Date().toISOString(),
     },
   ]);
 
   const [question, setQuestion] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleAsk = () => {
+  const handleAsk = async () => {
     if (question.trim()) {
-      console.log("Ask AI:", question);
+      const userMessage: AssistantMessage = {
+        id: Date.now().toString(),
+        message: question.trim(),
+        isBot: false,
+        timestamp: new Date().toISOString(),
+      };
+
+      setMessages(prev => [...prev, userMessage]);
       setQuestion("");
+      setIsLoading(true);
+
+      try {
+        const response = await apiRequest('POST', '/api/ai/chat', { message: userMessage.message });
+        const data = await response.json();
+        
+        const botMessage: AssistantMessage = {
+          id: (Date.now() + 1).toString(),
+          message: data.response,
+          isBot: true,
+          timestamp: new Date().toISOString(),
+        };
+
+        setMessages(prev => [...prev, botMessage]);
+      } catch (error) {
+        console.error('AI error:', error);
+        const errorMessage: AssistantMessage = {
+          id: (Date.now() + 1).toString(),
+          message: "Eish! Something went wrong. Try asking me again, fam!",
+          isBot: true,
+          timestamp: new Date().toISOString(),
+        };
+        setMessages(prev => [...prev, errorMessage]);
+      } finally {
+        setIsLoading(false);
+      }
     }
+  };
+
+  const getTimestamp = (timestamp: string) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    return `${Math.floor(diffMins / 60)}h ago`;
   };
 
   return (
@@ -69,10 +114,20 @@ export default function AIAssistant() {
                   }`}
                 >
                   <p className={`text-sm ${msg.isBot ? "italic" : ""}`}>{msg.message}</p>
-                  <div className="mt-1 text-xs opacity-70">{msg.timestamp}</div>
+                  <div className="mt-1 text-xs opacity-70">{getTimestamp(msg.timestamp)}</div>
                 </div>
               </div>
             ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="mr-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-chart-2/20">
+                  <Bot className="h-4 w-4 text-chart-2 animate-pulse" />
+                </div>
+                <div className="rounded-lg border-2 border-chart-2/30 bg-chart-2/10 px-4 py-2">
+                  <p className="text-sm italic">Thinking...</p>
+                </div>
+              </div>
+            )}
           </div>
         </ScrollArea>
 
@@ -82,13 +137,15 @@ export default function AIAssistant() {
               placeholder="Ask Mchambuzi anything..."
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleAsk()}
+              onKeyDown={(e) => e.key === "Enter" && !isLoading && handleAsk()}
+              disabled={isLoading}
               data-testid="input-ai-question"
             />
             <Button
               size="icon"
               onClick={handleAsk}
               className="bg-chart-2 hover:bg-chart-2/90"
+              disabled={isLoading}
               data-testid="button-ask-ai"
             >
               <Send className="h-4 w-4" />

@@ -1,4 +1,5 @@
 import { Flame, TrendingUp, Zap, Users, MessageCircle, Laugh, Search } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -21,93 +22,10 @@ interface HotSearch {
 export default function HeroSection() {
   const [selectedSearch, setSelectedSearch] = useState<HotSearch | null>(null);
 
-  //todo: remove mock functionality
-  const hotSearches: HotSearch[] = [
-    {
-      id: "1",
-      keyword: "Messi",
-      brief: "Breaking: Messi's Next Move",
-      details: "Inter Miami star Lionel Messi is rumored to be considering options for next season. Fans worldwide are speculating about potential destinations including a return to Barcelona or a move to Saudi Arabia.",
-      size: "xl",
-    },
-    {
-      id: "2",
-      keyword: "Champions League",
-      brief: "UCL Drama Unfolds",
-      details: "The Champions League knockout stages are heating up with unexpected results. Underdog teams are making waves while traditional powerhouses face elimination threats.",
-      size: "lg",
-    },
-    {
-      id: "3",
-      keyword: "Premier League",
-      brief: "Premier League Thriller",
-      details: "The Premier League title race is the tightest in years with three teams separated by just 2 points. Every match could determine who lifts the trophy.",
-      size: "lg",
-    },
-    {
-      id: "4",
-      keyword: "Salah",
-      brief: "Salah's Stunning Strike",
-      details: "Mohamed Salah scored a spectacular goal in Liverpool's latest match, continuing his incredible form this season with 25 goals in all competitions.",
-      size: "md",
-    },
-    {
-      id: "5",
-      keyword: "VAR",
-      brief: "VAR Sparks Debate",
-      details: "Another controversial VAR decision has football fans divided. The technology continues to generate heated discussions across social media.",
-      size: "sm",
-    },
-    {
-      id: "6",
-      keyword: "Haaland",
-      brief: "Haaland's Record Pace",
-      details: "Erling Haaland scored another hat-trick, breaking multiple Premier League records. His goal-scoring rate is unprecedented.",
-      size: "lg",
-    },
-    {
-      id: "7",
-      keyword: "AFCON",
-      brief: "AFCON Drama",
-      details: "African football fans are buzzing about the latest AFCON matches. Star players are delivering unforgettable performances.",
-      size: "md",
-    },
-    {
-      id: "8",
-      keyword: "Arsenal",
-      brief: "Gunners On Fire",
-      details: "Arsenal are showing championship form with impressive performances. They're proving to be serious title contenders.",
-      size: "md",
-    },
-    {
-      id: "9",
-      keyword: "Ronaldo",
-      brief: "CR7 Legacy",
-      details: "Cristiano Ronaldo continues to defy age with outstanding performances in the Saudi Pro League.",
-      size: "lg",
-    },
-    {
-      id: "10",
-      keyword: "Transfer Window",
-      brief: "Transfer News",
-      details: "Clubs are preparing for the next transfer window with big-money moves expected.",
-      size: "sm",
-    },
-    {
-      id: "11",
-      keyword: "El Clasico",
-      brief: "El Clasico Preview",
-      details: "The biggest match in club football is approaching. Real Madrid vs Barcelona always delivers drama.",
-      size: "md",
-    },
-    {
-      id: "12",
-      keyword: "Mbappe",
-      brief: "Mbappe Watch",
-      details: "Kylian Mbappe's future remains the hottest topic in football.",
-      size: "md",
-    },
-  ];
+  const { data: hotSearches = [] } = useQuery<HotSearch[]>({
+    queryKey: ['/api/trending/searches'],
+  });
+
 
   const sizeClasses = {
     sm: "text-sm md:text-base",
@@ -218,7 +136,7 @@ export default function HeroSection() {
               <div className="relative min-h-[400px]">
                 {/* Word cloud layout */}
                 <div className="flex flex-wrap items-center justify-center gap-4 p-8">
-                  {hotSearches.map((search, index) => (
+                  {hotSearches.length > 0 ? hotSearches.map((search, index) => (
                     <button
                       key={search.id}
                       onClick={() => setSelectedSearch(search)}
@@ -230,7 +148,9 @@ export default function HeroSection() {
                     >
                       {search.keyword}
                     </button>
-                  ))}
+                  )) : (
+                    <div className="text-muted-foreground">Loading hot searches...</div>
+                  )}
                 </div>
               </div>
             </div>
