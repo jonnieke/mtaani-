@@ -80,7 +80,9 @@ Preferred communication style: Simple, everyday language.
 
 **AI/ML Services:**
 - Google Generative AI (@google/genai) for the "Mchambuzi Halisi" AI assistant feature
-- Intended for natural language football commentary in Sheng and English
+- Gemini 2.5 Flash model for natural language football commentary in Sheng and English
+- System prompt configured with current season context (2025-2026) to avoid referencing outdated seasons
+- AI provides current football analysis with Kenyan street culture authenticity
 
 **Database Services:**
 - Neon Serverless PostgreSQL for production database hosting
