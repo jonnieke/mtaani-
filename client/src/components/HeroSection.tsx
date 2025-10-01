@@ -1,4 +1,4 @@
-import { Flame, TrendingUp, Zap, Users, MessageCircle, Laugh } from "lucide-react";
+import { Flame, TrendingUp, Zap, Users, MessageCircle, Laugh, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -15,6 +15,7 @@ interface HotSearch {
   keyword: string;
   brief: string;
   details: string;
+  size: "sm" | "md" | "lg" | "xl";
 }
 
 export default function HeroSection() {
@@ -24,67 +25,109 @@ export default function HeroSection() {
   const hotSearches: HotSearch[] = [
     {
       id: "1",
-      keyword: "Messi Transfer Drama",
+      keyword: "Messi",
       brief: "Breaking: Messi's Next Move",
       details: "Inter Miami star Lionel Messi is rumored to be considering options for next season. Fans worldwide are speculating about potential destinations including a return to Barcelona or a move to Saudi Arabia.",
+      size: "xl",
     },
     {
       id: "2",
-      keyword: "Champions League Upset",
+      keyword: "Champions League",
       brief: "UCL Drama Unfolds",
       details: "The Champions League knockout stages are heating up with unexpected results. Underdog teams are making waves while traditional powerhouses face elimination threats.",
+      size: "lg",
     },
     {
       id: "3",
-      keyword: "EPL Title Race",
+      keyword: "Premier League",
       brief: "Premier League Thriller",
       details: "The Premier League title race is the tightest in years with three teams separated by just 2 points. Every match could determine who lifts the trophy.",
+      size: "lg",
     },
     {
       id: "4",
-      keyword: "Salah Record Breaking",
+      keyword: "Salah",
       brief: "Salah's Stunning Strike",
       details: "Mohamed Salah scored a spectacular goal in Liverpool's latest match, continuing his incredible form this season with 25 goals in all competitions.",
+      size: "md",
     },
     {
       id: "5",
-      keyword: "VAR Controversy",
+      keyword: "VAR",
       brief: "VAR Sparks Debate",
       details: "Another controversial VAR decision has football fans divided. The technology continues to generate heated discussions across social media.",
+      size: "sm",
     },
     {
       id: "6",
-      keyword: "Haaland Hat-trick",
+      keyword: "Haaland",
       brief: "Haaland's Record Pace",
       details: "Erling Haaland scored another hat-trick, breaking multiple Premier League records. His goal-scoring rate is unprecedented.",
+      size: "lg",
     },
     {
       id: "7",
-      keyword: "AFCON Showdown",
+      keyword: "AFCON",
       brief: "AFCON Drama",
       details: "African football fans are buzzing about the latest AFCON matches. Star players are delivering unforgettable performances.",
+      size: "md",
     },
     {
       id: "8",
-      keyword: "Arsenal's Form",
+      keyword: "Arsenal",
       brief: "Gunners On Fire",
       details: "Arsenal are showing championship form with impressive performances. They're proving to be serious title contenders.",
+      size: "md",
+    },
+    {
+      id: "9",
+      keyword: "Ronaldo",
+      brief: "CR7 Legacy",
+      details: "Cristiano Ronaldo continues to defy age with outstanding performances in the Saudi Pro League.",
+      size: "lg",
+    },
+    {
+      id: "10",
+      keyword: "Transfer Window",
+      brief: "Transfer News",
+      details: "Clubs are preparing for the next transfer window with big-money moves expected.",
+      size: "sm",
+    },
+    {
+      id: "11",
+      keyword: "El Clasico",
+      brief: "El Clasico Preview",
+      details: "The biggest match in club football is approaching. Real Madrid vs Barcelona always delivers drama.",
+      size: "md",
+    },
+    {
+      id: "12",
+      keyword: "Mbappe",
+      brief: "Mbappe Watch",
+      details: "Kylian Mbappe's future remains the hottest topic in football.",
+      size: "md",
     },
   ];
 
+  const sizeClasses = {
+    sm: "text-sm md:text-base",
+    md: "text-base md:text-lg",
+    lg: "text-xl md:text-2xl",
+    xl: "text-2xl md:text-4xl",
+  };
+
   return (
     <>
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#0a0f0a] via-[#0d1a0d] to-[#000000]">
+      <section className="relative overflow-hidden bg-[#0a1628]">
         {/* Animated background patterns */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMyMmM1NWUiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTAgMGgyMHYyMEgweiIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMzYjgyZjYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTAgMGgyMHYyMEgweiIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
         
-        {/* Diagonal stripes */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-chart-3/10"></div>
-        <div className="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-primary/20 to-transparent"></div>
+        {/* Solid color blocks */}
+        <div className="absolute right-0 top-0 h-full w-1/3 bg-[#1e40af]/10"></div>
         
-        {/* Glow effects */}
-        <div className="absolute left-0 top-1/4 h-96 w-96 rounded-full bg-primary/20 blur-[120px]"></div>
-        <div className="absolute right-0 bottom-1/4 h-96 w-96 rounded-full bg-chart-3/20 blur-[120px]"></div>
+        {/* Glow effects - solid colors no gradients */}
+        <div className="absolute left-0 top-1/4 h-96 w-96 rounded-full bg-[#3b82f6]/10 blur-[120px]"></div>
+        <div className="absolute right-0 bottom-1/4 h-96 w-96 rounded-full bg-[#60a5fa]/10 blur-[120px]"></div>
 
         <div className="container relative mx-auto px-4 py-16 md:px-6 md:py-24">
           <div className="grid items-center gap-8 lg:grid-cols-2">
@@ -93,14 +136,14 @@ export default function HeroSection() {
               {/* Live badge */}
               <div className="flex items-center gap-3">
                 <div className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-chart-3 opacity-75"></span>
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-chart-3"></span>
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#3b82f6] opacity-75"></span>
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[#3b82f6]"></span>
                 </div>
-                <Badge className="bg-chart-3/20 text-chart-3 border border-chart-3/50 backdrop-blur-sm">
+                <Badge className="bg-[#1e3a8a] text-[#60a5fa] border border-[#3b82f6]/50">
                   <Zap className="mr-1 h-3 w-3" />
                   LIVE NOW
                 </Badge>
-                <Badge variant="secondary" className="backdrop-blur-sm">
+                <Badge variant="secondary" className="bg-[#1e293b] text-white border-[#475569]">
                   <Users className="mr-1 h-3 w-3" />
                   12.4K Online
                 </Badge>
@@ -109,20 +152,20 @@ export default function HeroSection() {
               {/* Main headline */}
               <div>
                 <div className="mb-3 flex items-center gap-2">
-                  <Flame className="h-10 w-10 text-chart-3 md:h-12 md:w-12" />
+                  <Flame className="h-10 w-10 text-[#f59e0b] md:h-12 md:w-12" />
                   <h1 className="font-display text-5xl font-black leading-none text-white md:text-7xl lg:text-8xl">
                     Ball
                     <br />
-                    <span className="bg-gradient-to-r from-primary via-green-400 to-chart-3 bg-clip-text text-transparent">
+                    <span className="text-[#3b82f6]">
                       Mtaani
                     </span>
                   </h1>
                 </div>
                 <p className="max-w-xl text-lg text-gray-300 md:text-xl">
-                  Your home for football <span className="font-bold text-chart-3">banter</span>, 
-                  epic <span className="font-bold text-chart-5">memes</span>, 
-                  live <span className="font-bold text-chart-2">stats</span> & 
-                  AI <span className="font-bold text-primary">vibes</span>
+                  Your home for football <span className="font-bold text-[#3b82f6]">banter</span>, 
+                  epic <span className="font-bold text-[#f59e0b]">memes</span>, 
+                  live <span className="font-bold text-[#60a5fa]">stats</span> & 
+                  AI <span className="font-bold text-[#3b82f6]">vibes</span>
                 </p>
               </div>
 
@@ -130,7 +173,7 @@ export default function HeroSection() {
               <div className="flex flex-wrap gap-3">
                 <Button 
                   size="lg" 
-                  className="bg-gradient-to-r from-primary to-green-600 text-lg font-bold shadow-lg shadow-primary/50 hover:shadow-xl hover:shadow-primary/60"
+                  className="bg-[#3b82f6] text-white text-lg font-bold hover:bg-[#2563eb]"
                   data-testid="button-join-chat"
                   onClick={() => console.log("Join chat clicked")}
                 >
@@ -140,7 +183,7 @@ export default function HeroSection() {
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="border-2 border-white/20 bg-white/5 text-white backdrop-blur-sm hover:bg-white/10"
+                  className="border-2 border-[#3b82f6] bg-transparent text-[#3b82f6] hover:bg-[#3b82f6]/10"
                   data-testid="button-view-memes"
                   onClick={() => console.log("View memes clicked")}
                 >
@@ -166,27 +209,28 @@ export default function HeroSection() {
               </div>
             </div>
 
-            {/* Right column - Visual element */}
+            {/* Right column - Word Cloud */}
             <div className="relative hidden lg:block">
-              <div className="relative">
-                {/* Large decorative circle */}
-                <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-primary/20 bg-gradient-to-br from-primary/10 to-chart-3/10 backdrop-blur-xl"></div>
-                
-                {/* Floating elements */}
-                <div className="absolute left-1/4 top-1/4 animate-bounce">
-                  <div className="rounded-full bg-chart-3/20 p-4 backdrop-blur-sm border border-chart-3/30">
-                    <Flame className="h-8 w-8 text-chart-3" />
-                  </div>
-                </div>
-                <div className="absolute right-1/4 top-1/3 animate-bounce delay-150">
-                  <div className="rounded-full bg-chart-2/20 p-4 backdrop-blur-sm border border-chart-2/30">
-                    <TrendingUp className="h-8 w-8 text-chart-2" />
-                  </div>
-                </div>
-                <div className="absolute bottom-1/3 left-1/3 animate-bounce delay-300">
-                  <div className="rounded-full bg-primary/20 p-4 backdrop-blur-sm border border-primary/30">
-                    <Zap className="h-8 w-8 text-primary" />
-                  </div>
+              <div className="mb-4 flex items-center justify-center gap-2">
+                <Search className="h-5 w-5 text-[#3b82f6]" />
+                <h3 className="font-display text-lg font-bold text-white">Hot Searches</h3>
+              </div>
+              <div className="relative min-h-[400px]">
+                {/* Word cloud layout */}
+                <div className="flex flex-wrap items-center justify-center gap-4 p-8">
+                  {hotSearches.map((search, index) => (
+                    <button
+                      key={search.id}
+                      onClick={() => setSelectedSearch(search)}
+                      className={`${sizeClasses[search.size]} font-display font-bold text-white transition-all hover:text-[#3b82f6] hover:scale-110 cursor-pointer`}
+                      style={{
+                        transform: `rotate(${(index % 3) * 5 - 5}deg)`,
+                      }}
+                      data-testid={`hot-search-${search.id}`}
+                    >
+                      {search.keyword}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
@@ -197,32 +241,6 @@ export default function HeroSection() {
         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent"></div>
       </section>
 
-      {/* Trending carousel - compact horizontal */}
-      <section className="border-y bg-card/50 py-4 backdrop-blur-sm">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <TrendingUp className="h-5 w-5 text-chart-3" />
-              <span className="font-display font-bold text-sm md:text-base whitespace-nowrap">
-                Hot Searches:
-              </span>
-            </div>
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory flex-1">
-              {hotSearches.map((search) => (
-                <button
-                  key={search.id}
-                  onClick={() => setSelectedSearch(search)}
-                  className="group relative flex-shrink-0 snap-start rounded-full border border-primary/30 bg-gradient-to-r from-primary/10 to-chart-3/10 px-4 py-2 text-sm font-medium transition-all hover-elevate hover:border-primary/60 hover:from-primary/20 hover:to-chart-3/20"
-                  data-testid={`trending-${search.id}`}
-                >
-                  <span className="relative z-10">{search.keyword}</span>
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/0 to-chart-3/0 opacity-0 transition-opacity group-hover:opacity-20"></div>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
       <Sheet open={!!selectedSearch} onOpenChange={() => setSelectedSearch(null)}>
         <SheetContent side="right" data-testid="sheet-search-details">

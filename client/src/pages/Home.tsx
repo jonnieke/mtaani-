@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
-import TrendingTopics from "@/components/TrendingTopics";
+import TrendingCarousel from "@/components/TrendingCarousel";
 import TodaysMatches from "@/components/TodaysMatches";
 import MemeCarousel from "@/components/MemeCarousel";
 import SideChat from "@/components/SideChat";
@@ -11,17 +11,14 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <Header />
       <HeroSection />
+      <TrendingCarousel />
       
       <main className="container mx-auto px-4 py-8 md:px-6">
         <div className="space-y-12">
-          <TrendingTopics />
+          <AIAssistant />
+          <SideChat />
           <TodaysMatches />
           <MemeCarousel />
-          
-          <div className="grid gap-8 lg:grid-cols-2">
-            <SideChat />
-            <AIAssistant />
-          </div>
         </div>
       </main>
 
