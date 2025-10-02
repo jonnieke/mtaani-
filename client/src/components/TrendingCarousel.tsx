@@ -54,7 +54,12 @@ export default function TrendingCarousel() {
             {topics.map((topic, index) => (
               <button
                 key={topic.id}
-                onClick={() => setSelectedTopic(topic)}
+                onClick={() => {
+                  setSelectedTopic(topic);
+                  const ai = document.getElementById('ai-assistant');
+                  if (ai) ai.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  window.dispatchEvent(new CustomEvent('ask-ai', { detail: { question: topic.topic } }));
+                }}
                 className={`group relative flex-shrink-0 snap-start rounded-lg border px-4 py-2 text-sm font-medium transition-all hover-elevate ${
                   index === 0
                     ? "border-[#f59e0b] bg-[#f59e0b]/10 text-foreground"

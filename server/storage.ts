@@ -7,6 +7,7 @@ import {
   type InsertChatMessage
 } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { ensureFirebase } from "./firebase";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -95,4 +96,114 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+class FirestoreStorage implements IStorage {
+  private collectionUsers = "users";
+  private collectionMemes = "memes";
+  private collectionChat = "chat_messages";
+
+  async getUser(id: string): Promise<User | undefined> {
+    const db = ensureFirebase();
+    const snap = await db.collection(this.collectionUsers).doc(id).get();
+    if (!snap.exists) return undefined;
+    const data = snap.data() as any;
+    return { id: snap.id, username: data.username, password: data.password } as User;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const db = ensureFirebase();
+    const q = await db.collection(this.collectionUsers).where("username", "==", username).limit(1).get();
+    if (q.empty) return undefined;
+    const doc = q.docs[0];
+    const d = doc.data() as any;
+    return { id: doc.id, username: d.username, password: d.password } as User;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const db = ensureFirebase();
+    const docRef = await db.collection(this.collectionUsers).add({
+      username: insertUser.username,
+      password: insertUser.password,
+    });
+    return { id: docRef.id, username: insertUser.username, password: insertUser.password } as User;
+  }
+
+  async getMemes(limit: number = 50): Promise<Meme[]> {
+    const db = ensureFirebase();
+    const q = await db
+      .collection(this.collectionMemes)
+      .orderBy("createdAt", "desc")
+      .limit(limit)
+      .get();
+    return q.docs.map((doc) => {
+      const d = doc.data() as any;
+      return {
+        id: doc.id,
+        imageUrl: d.imageUrl,
+        caption: d.caption,
+        likes: d.likes ?? 0,
+        createdAt: d.createdAt?.toDate ? d.createdAt.toDate() : new Date(d.createdAt),
+      } as Meme;
+    });
+  }
+
+  async createMeme(insertMeme: InsertMeme): Promise<Meme> {
+    const db = ensureFirebase();
+    const now = new Date();
+    const docRef = await db.collection(this.collectionMemes).add({
+      imageUrl: insertMeme.imageUrl,
+      caption: insertMeme.caption,
+      likes: insertMeme.likes ?? 0,
+      createdAt: now,
+    });
+    return { id: docRef.id, imageUrl: insertMeme.imageUrl, caption: insertMeme.caption, likes: insertMeme.likes ?? 0, createdAt: now } as Meme;
+  }
+
+  async likeMeme(id: string): Promise<Meme | undefined> {
+    const db = ensureFirebase();
+    const ref = db.collection(this.collectionMemes).doc(id);
+    const snap = await ref.get();
+    if (!snap.exists) return undefined;
+    const d = snap.data() as any;
+    const likes = (d.likes ?? 0) + 1;
+    await ref.update({ likes });
+    return {
+      id: snap.id,
+      imageUrl: d.imageUrl,
+      caption: d.caption,
+      likes,
+      createdAt: d.createdAt?.toDate ? d.createdAt.toDate() : new Date(d.createdAt),
+    } as Meme;
+  }
+
+  async getChatMessages(limit: number = 100): Promise<ChatMessage[]> {
+    const db = ensureFirebase();
+    const q = await db
+      .collection(this.collectionChat)
+      .orderBy("timestamp", "asc")
+      .limit(limit)
+      .get();
+    return q.docs.map((doc) => {
+      const d = doc.data() as any;
+      return {
+        id: doc.id,
+        user: d.user,
+        message: d.message,
+        timestamp: d.timestamp?.toDate ? d.timestamp.toDate() : new Date(d.timestamp),
+      } as ChatMessage;
+    });
+  }
+
+  async createChatMessage(insertMessage: InsertChatMessage): Promise<ChatMessage> {
+    const db = ensureFirebase();
+    const now = new Date();
+    const docRef = await db.collection(this.collectionChat).add({
+      user: insertMessage.user,
+      message: insertMessage.message,
+      timestamp: now,
+    });
+    return { id: docRef.id, user: insertMessage.user, message: insertMessage.message, timestamp: now } as ChatMessage;
+  }
+}
+
+const useFirestore = process.env.USE_FIRESTORE === "true";
+export const storage: IStorage = useFirestore ? new FirestoreStorage() : new MemStorage();

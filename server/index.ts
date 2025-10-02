@@ -1,10 +1,19 @@
+import "dotenv/config";
 import express, { type Request, Response, NextFunction } from "express";
+import { resolve } from "path";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { scheduleTrendingRefresh } from "./trends";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Serve football cartoon images
+app.use('/assets/generated', express.static(resolve(process.cwd(), 'attached_assets/generated_images')));
+
+// Serve uploaded meme images
+app.use('/uploads', express.static(resolve(process.cwd(), 'uploads')));
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -38,6 +47,8 @@ app.use((req, res, next) => {
 
 (async () => {
   const server = await registerRoutes(app);
+  // schedule trends refresh (runs in background)
+  scheduleTrendingRefresh();
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
@@ -61,11 +72,15 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen({
+  const listenOptions: any = {
     port,
     host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
+  };
+  // SO_REUSEPORT is not supported on Windows; avoid ENOTSUP
+  if (process.platform !== 'win32') {
+    listenOptions.reusePort = true;
+  }
+  server.listen(listenOptions, () => {
     log(`serving on port ${port}`);
   });
 })();

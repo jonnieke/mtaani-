@@ -37,6 +37,17 @@ export default function HeroSection() {
   return (
     <>
       <section className="relative overflow-hidden bg-[#0a1628]">
+        {/* Football background image */}
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?q=80&w=2000&auto=format&fit=crop"
+            alt="Football stadium fans"
+            className="h-full w-full object-cover opacity-25"
+            loading="eager"
+            fetchpriority="high"
+          />
+          <div className="absolute inset-0 bg-[#0a1628]/60"></div>
+        </div>
         {/* Animated background patterns */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMzYjgyZjYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTAgMGgyMHYyMEgweiIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
         
@@ -93,7 +104,10 @@ export default function HeroSection() {
                   size="lg" 
                   className="bg-[#3b82f6] text-white text-lg font-bold hover:bg-[#2563eb]"
                   data-testid="button-join-chat"
-                  onClick={() => console.log("Join chat clicked")}
+                  onClick={() => {
+                    const el = document.getElementById('side-chat');
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
                 >
                   <MessageCircle className="mr-2 h-5 w-5" />
                   Join the Banter
@@ -103,10 +117,37 @@ export default function HeroSection() {
                   variant="outline" 
                   className="border-2 border-[#3b82f6] bg-transparent text-[#3b82f6] hover:bg-[#3b82f6]/10"
                   data-testid="button-view-memes"
-                  onClick={() => console.log("View memes clicked")}
+                  onClick={() => {
+                    const section = document.querySelector('[data-section="memes"]') as HTMLElement | null;
+                    if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
                 >
                   <Laugh className="mr-2 h-5 w-5" />
                   Browse Memes
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  className="border-2 border-chart-2 text-chart-2 hover:bg-chart-2/10"
+                  data-testid="button-ai-assistant"
+                  onClick={() => {
+                    const el = document.getElementById('ai-assistant');
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                >
+                  Mchambuzi Halisi
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  className="border-2 border-[#22c55e] text-[#22c55e] hover:bg-[#22c55e]/10"
+                  data-testid="button-side-chat"
+                  onClick={() => {
+                    const el = document.getElementById('side-chat');
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                >
+                  Join the Side Chat
                 </Button>
               </div>
 
@@ -139,7 +180,12 @@ export default function HeroSection() {
                   {hotSearches.length > 0 ? hotSearches.map((search, index) => (
                     <button
                       key={search.id}
-                      onClick={() => setSelectedSearch(search)}
+                      onClick={() => {
+                        setSelectedSearch(search);
+                        const ai = document.getElementById('ai-assistant');
+                        if (ai) ai.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        window.dispatchEvent(new CustomEvent('ask-ai', { detail: { question: search.keyword } }));
+                      }}
                       className={`${sizeClasses[search.size]} font-display font-bold text-white transition-all hover:text-[#3b82f6] hover:scale-110 cursor-pointer`}
                       style={{
                         transform: `rotate(${(index % 3) * 5 - 5}deg)`,

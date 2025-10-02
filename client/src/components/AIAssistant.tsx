@@ -26,6 +26,22 @@ export default function AIAssistant() {
 
   const [question, setQuestion] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  // Listen for external trend clicks to ask AI automatically
+  // Minimal guard to avoid spamming while already loading
+  if (typeof window !== 'undefined') {
+    window.addEventListener('ask-ai', (e: any) => {
+      const q = e?.detail?.question;
+      if (q && !isLoading) {
+        setQuestion(q);
+        // slight delay to ensure state updates, then ask
+        setTimeout(() => {
+          const el = document.getElementById('ai-assistant');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          (document.querySelector('[data-testid="button-ask-ai"]') as HTMLButtonElement | null)?.click();
+        }, 50);
+      }
+    });
+  }
 
   const handleAsk = async () => {
     if (question.trim()) {
@@ -90,7 +106,7 @@ export default function AIAssistant() {
   };
 
   return (
-    <section className="w-full">
+    <section id="ai-assistant" className="w-full">
       <div className="mb-4 flex items-center gap-2">
         <Bot className="h-6 w-6 text-chart-2" />
         <h2 className="font-display text-2xl font-bold md:text-3xl">Mchambuzi Halisi</h2>

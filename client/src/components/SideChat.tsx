@@ -23,7 +23,10 @@ export default function SideChat() {
 
   useEffect(() => {
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
+    // In development, connect to the server on port 5000, in production use same host
+    const isDevelopment = import.meta.env.DEV;
+    const host = isDevelopment ? 'localhost:5000' : window.location.host;
+    const wsUrl = `${protocol}//${host}/ws`;
     const socket = new WebSocket(wsUrl);
 
     socket.onopen = () => {
@@ -97,7 +100,7 @@ export default function SideChat() {
   };
 
   return (
-    <section className="w-full">
+    <section id="side-chat" className="w-full">
       <div className="mb-4 flex items-center gap-2">
         <MessageCircle className="h-6 w-6 text-primary" />
         <h2 className="font-display text-2xl font-bold md:text-3xl">Join the Side Chat</h2>
